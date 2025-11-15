@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: TrainingCards
+
+  jpa:
+    open-in-view: false
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/training-cards
+    username: postgres
+    password: postgres
+    hikari:
+      schema: cards_schema
+      connection-init-sql: CREATE schema if not exists cards_schema
+      connection-timeout: 10000
