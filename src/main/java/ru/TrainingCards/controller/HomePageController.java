@@ -6,15 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-public class PageController {
+public class HomePageController {
 
     @GetMapping("/")
     public String home() {
         return "home";
-    }
-
-    @GetMapping("/cards")
-    public String cards() {
-        return "cards";
     }
 }

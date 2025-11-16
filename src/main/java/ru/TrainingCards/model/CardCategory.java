@@ -19,6 +19,6 @@ public class CardCategory {
 
     private String description;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Card> cards;
 }

@@ -12,10 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CardCategoryResponse {
-    private int id;
-    private String name;
-    private String description;
-    private int cardCount;
-    private List<CardResponse> cards = new ArrayList<>();
+public class CardCategoriesResponse {
+    List<CardCategoryResponse> cardCategories = new ArrayList<>();
 }

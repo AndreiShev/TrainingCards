@@ -6,16 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.TrainingCards.dto.request.CardCategoryRequest;
 import ru.TrainingCards.dto.request.CardRequest;
+import ru.TrainingCards.dto.response.CardCategoriesResponse;
 import ru.TrainingCards.dto.response.CardCategoryResponse;
 import ru.TrainingCards.dto.response.CardResponse;
-import ru.TrainingCards.dto.response.CardsResponse;
 import ru.TrainingCards.mapper.CardCategoryMapper;
 import ru.TrainingCards.mapper.CardMapper;
 import ru.TrainingCards.service.CardService;
 import ru.TrainingCards.service.CategoryService;
 
 @RestController
-@RequestMapping("/cards/")
+@RequestMapping("/api/v1/cards/")
 @RequiredArgsConstructor
 public class CardController {
     private final CardService cardService;
@@ -24,8 +24,10 @@ public class CardController {
     private final CategoryService categoryService;
 
     @GetMapping("/")
-    public ResponseEntity<CardsResponse> getAllCards() {
-        return ResponseEntity.status(HttpStatus.OK).body(cardMapper.CardsToResponse(cardService.getCards()));
+    public ResponseEntity<CardCategoriesResponse> getAllCategoriesAndCards() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                categoryMapper.CardCategoriesToResponse(
+                        categoryService.findAllCategories()));
     }
 
     @PostMapping("/add")

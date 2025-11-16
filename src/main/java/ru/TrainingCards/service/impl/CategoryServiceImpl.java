@@ -7,6 +7,8 @@ import ru.TrainingCards.model.CardCategory;
 import ru.TrainingCards.repository.CategoryRepository;
 import ru.TrainingCards.service.CategoryService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -15,6 +17,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CardCategory findCategoryByName(String name) {
         return categoryRepository.findByName(name);
+    }
+
+    @Override
+    public List<CardCategory> findAllCategories() {
+        return categoryRepository.findAll();
     }
 
     @Override

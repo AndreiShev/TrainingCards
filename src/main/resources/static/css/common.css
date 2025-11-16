@@ -317,7 +317,7 @@ nav {
 /* Cards List View */
 .cards-header {
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
 }

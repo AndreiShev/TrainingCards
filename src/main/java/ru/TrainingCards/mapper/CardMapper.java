@@ -26,7 +26,7 @@ public class CardMapper {
     public CardResponse CardToResponse(Card card) {
         CardResponse cardResponse = new CardResponse();
         cardResponse.setId(card.getId());
-        cardResponse.setTitle(card.getTitle());
+        cardResponse.setQuestion(card.getTitle());
         cardResponse.setAnswer(card.getAnswer());
         cardResponse.setCategory(card.getCategory().getName());
         return cardResponse;
@@ -34,6 +34,11 @@ public class CardMapper {
 
     public CardsResponse CardsToResponse(List<Card> cards) {
         CardsResponse cardsResponse = new CardsResponse();
+
+        if (cards == null || cards.isEmpty()) {
+            return cardsResponse;
+        }
+
         List<CardResponse> responses = cardsResponse.getCards();
         for (Card card : cards) {
             CardResponse cardResponse = CardToResponse(card);
