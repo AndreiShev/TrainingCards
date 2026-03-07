@@ -4,49 +4,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.TrainingCards.dto.request.CardCategoryRequest;
 import ru.TrainingCards.dto.request.CardRequest;
-import ru.TrainingCards.dto.response.CardCategoriesResponse;
-import ru.TrainingCards.dto.response.CardCategoryResponse;
 import ru.TrainingCards.dto.response.CardResponse;
-import ru.TrainingCards.mapper.CardCategoryMapper;
-import ru.TrainingCards.mapper.CardMapper;
 import ru.TrainingCards.service.CardService;
-import ru.TrainingCards.service.CategoryService;
+
 
 @RestController
 @RequestMapping("/api/v1/cards/")
 @RequiredArgsConstructor
 public class CardController {
     private final CardService cardService;
-    private final CardMapper cardMapper;
-    private final CardCategoryMapper categoryMapper;
-    private final CategoryService categoryService;
 
-    @GetMapping("/")
-    public ResponseEntity<CardCategoriesResponse> getAllCategoriesAndCards() {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryMapper.CardCategoriesToResponse(
-                        categoryService.findAllCategories()));
-    }
-
-    @PostMapping("/add")
+    @PostMapping("/addCard")
     public ResponseEntity<CardResponse> addCard(@RequestBody CardRequest cardRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                cardMapper.CardToResponse(
-                        cardService.addCard(cardMapper.RequestToCard(cardRequest))));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cardService.addCard(cardRequest));
     }
 
-    @PostMapping("/addCategory")
-    public ResponseEntity<CardCategoryResponse> addCategory(@RequestBody CardCategoryRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                categoryMapper.CardCategoryToResponse(
-                        categoryService.save(
-                                categoryMapper.CardCategoryRequestToCardCategory(request))));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<CardResponse> deleteCard(@RequestParam int id) {
+    @DeleteMapping("/card/{id}")
+    public ResponseEntity<Void> deleteCard(@PathVariable Integer id) {
         cardService.removeCard(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

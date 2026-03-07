@@ -14,9 +14,7 @@
                 <nav>
                     <a href="#" class="logo">CardMaster</a>
                     <div class="nav-links">
-                        <a href="#features">Возможности</a>
-                        <a href="#start">Начать обучение</a>
-                        <a href="#" onclick="showAuth()">Войти</a>
+                        <a href="/">Войти</a>
                     </div>
                 </nav>
             </div>
@@ -28,107 +26,10 @@
                 <h1>Эффективное обучение с карточками</h1>
                 <p>Запоминайте информацию быстрее с помощью интервального повторения</p>
                 <div class="cta-buttons">
-                    <a href="#start" class="btn btn-primary">Начать обучение</a>
-                    <a href="#" class="btn btn-secondary" onclick="showAuth()">Создать аккаунт</a>
+                    <a href="/cards" class="btn btn-primary">Начать обучение</a>
+                    <a href="/" class="btn btn-primary">Создать аккаунт</a>
                 </div>
             </div>
         </section>
-
-        <!-- Features Section -->
-        <section class="features" id="features">
-            <div class="container">
-                <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Почему CardMaster?</h2>
-                <p style="text-align: center; font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto;">
-                    Современный подход к обучению, основанный на научно доказанных методах
-                </p>
-
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📚</div>
-                        <h3>Умное повторение</h3>
-                        <p>Алгоритм интервального повторения показывает карточки в оптимальные моменты для лучшего запоминания</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>Доступ везде</h3>
-                        <p>Занимайтесь на компьютере, телефоне или планшете. Ваш прогресс синхронизируется между устройствами</p>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Персонализация</h3>
-                        <p>Создавайте собственные колоды карточек или используйте готовые наборы по разным темам</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="cta" id="start">
-            <div class="container">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Начните учиться прямо сейчас!</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">
-                    Присоединяйтесь к тысячам студентов, которые уже улучшили свои знания
-                </p>
-                <div class="cta-buttons">
-                    <button class="btn btn-primary"><a href="/cards">Начать обучение без регистрации</a></button>
-                    <button class="btn btn-secondary" onclick="showAuth()">Войти в аккаунт</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <div class="container">
-                <p>&copy; 2024 CardMaster. Все права защищены.</p>
-            </div>
-        </footer>
-
-        <!-- Auth Modal -->
-        <div id="authModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000;">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 15px; min-width: 400px;">
-                <h3 style="margin-bottom: 1.5rem; text-align: center;">Вход в систему</h3>
-                <form id="authForm" style="display: flex; flex-direction: column; gap: 1rem;">
-                    <input type="email" placeholder="Email" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
-                    <input type="password" placeholder="Пароль" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
-                    <button type="button" class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Войти</button>
-                    <button type="button" class="btn btn-outline" style="width: 100%;" onclick="handleRegister()">Зарегистрироваться</button>
-                </form>
-                <button onclick="hideAuth()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
-            </div>
-        </div>
-
-        <script>
-            function showAuth() {
-                document.getElementById('authModal').style.display = 'block';
-            }
-
-            function hideAuth() {
-                document.getElementById('authModal').style.display = 'none';
-            }
-
-            function handleLogin() {
-                alert('Функция входа будет реализована позже');
-                hideAuth();
-            }
-
-            function handleRegister() {
-                alert('Функция регистрации будет реализована позже');
-                hideAuth();
-            }
-
-            function startLearning() {
-                alert('Переход к обучению... В реальном приложении здесь будет редирект на страницу обучения');
-                // window.location.href = '/learning';
-            }
-
-            // Закрытие модального окна при клике вне его
-            document.getElementById('authModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    hideAuth();
-                }
-            });
-        </script>
     </body>
 </html>

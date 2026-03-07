@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Всячина",
+    "description": "Вопросы обо всем",
+    "cardCount": 1,
+    "cards": [
+      {
+        "id": 1,
+        "question": "Столица России",
+        "answer": "Москва",
+        "category": "Всячина"
+      },
+      {
+        "id": 2,
+        "question": "Столица Китая",
+        "answer": "Пекин",
+        "category": "Всячина"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Тест",
+    "description": "Описание тестовой категории",
+    "cardCount": 0,
+    "cards": []
+  },
+  {
+    "id": 3,
+    "name": "Еще тест",
+    "description": "Описание тестовой категории",
+    "cardCount": 0,
+    "cards": []
+  },
+  {
+    "id": 4,
+    "name": "",
+    "description": "",
+    "cardCount": 0,
+    "cards": []
+  },
+  {
+    "id": 5,
+    "name": "",
+    "description": "",
+    "cardCount": 0,
+    "cards": []
+  }
+]

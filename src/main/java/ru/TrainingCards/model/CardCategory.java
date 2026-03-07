@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -18,7 +16,4 @@ public class CardCategory {
     private String name;
 
     private String description;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    private List<Card> cards;
 }

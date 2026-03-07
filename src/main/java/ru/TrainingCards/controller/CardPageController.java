@@ -4,20 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.TrainingCards.dto.response.CardCategoriesResponse;
-import ru.TrainingCards.mapper.CardCategoryMapper;
 import ru.TrainingCards.service.CategoryService;
 
 @Controller
 @RequestMapping("/cards")
 @RequiredArgsConstructor
 public class CardPageController {
-
+    private final CategoryService categoryService;
 
     @GetMapping
-    public String cards() {
+    public String cards(Model model) {
+        model.addAttribute("cardCategories", categoryService.findAllCategories());
+
         return "cards";
     }
 }

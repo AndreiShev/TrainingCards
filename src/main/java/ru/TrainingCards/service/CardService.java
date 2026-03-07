@@ -1,19 +1,32 @@
 package ru.TrainingCards.service;
 
-
+import ru.TrainingCards.dto.request.CardRequest;
+import ru.TrainingCards.dto.response.CardResponse;
+import ru.TrainingCards.dto.response.CardsResponse;
 import ru.TrainingCards.model.Card;
 
 import java.util.List;
 
+
 public interface CardService {
 
-    public List<Card> getCards();
+    List<Card> getCardsEntity();
 
-    public Card getCard(int id);
+    public List<CardResponse> getCards();
 
-    public Card addCard(Card card);
+    List<Card> getCardsEntityByCategory(Integer categoryId);
 
-    public Card updateCard(Card card);
+    public List<CardResponse> getCardsByCategory(Integer id);
 
-    public void removeCard(int id);
+    Card getCardEntity(Integer id);
+
+    public CardResponse getCard(Integer id);
+
+    public CardResponse addCard(CardRequest cardRequest);
+
+    public CardResponse updateCard(CardRequest cardRequest);
+
+    public void removeCard(Integer id);
+
+    void removeCards(List<Card> cards);
 }

@@ -8,11 +8,13 @@ spring:
   devtools:
     restart:
       log-condition-evaluation-delta: false
+      enabled: true
 
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: update
+    show-sql: true
 
   datasource:
     driver-class-name: org.postgresql.Driver

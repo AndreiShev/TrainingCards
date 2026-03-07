@@ -12,33 +12,27 @@
         <header class="header-cards">
             <div class="container">
                 <nav class="nav">
-                    <a href="#" class="logo">CardMaster</a>
-                    <div class="user-menu">
-                        <span>Привет, Пользователь!</span>
-                        <button class="btn btn-outline" onclick="goHome()">На главную</button>
-                    </div>
+                    <a class="logo" href="/">CardMaster</a>
                 </nav>
             </div>
         </header>
 
         <!-- Main Content -->
-        <!-- Main Content -->
         <div class="container">
             <div class="main-layout">
                 <!-- Sidebar with Categories -->
                 <div class="sidebar">
-                    <h3>Категории карточек</h3>
+                    <h3 class="categories-title">Категории карточек</h3>
                     <ul class="categories-list" id="categoriesList">
-                        <!-- Categories will be populated by JavaScript -->
+                        <li th:class="category-item"  th:data-category-id="${category.id}" th:each="category : ${cardCategories}">
+                            <span th:text="${category.getName()}"></span>
+                            <span th:class="card-count" th:text="${category.cardCount}"></span>
+                            <button class="btn btn-close"><img src="/svg/close-circle.svg" alt=""></button>
+                        </li>
                     </ul>
-                    <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" >
+                    <button id="addCategoryButton" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" >
                         + Новая категория
                     </button>
-                    <form name="addCategoryForm">
-                        <input type="text" name="name" placeholder="Наименование категории">
-                        <input type="text" name="description" placeholder="Описание">
-                        <input type="submit" value="создать" id="addCategoryButton">
-                    </form>
                 </div>
 
                 <!-- Content Area -->
@@ -46,16 +40,19 @@
                     <!-- Cards List View -->
                     <div id="cardsListView">
                         <div class="cards-header">
-                            <h2 id="currentCategory">Выберите категорию</h2>
-                            <button class="btn btn-primary" id="startLearningBtn" style="display: none;" onclick="startLearning()">
-                                🎯 Начать обучение
-                            </button>
+                            <h2 class="cards-title" id="currentCategory">Выберите категорию</h2>
+                            <div class="cards-actions">
+                                <button class="btn" id="addCardBtn">
+                                    <img class="img-btn" src="/svg/add.svg" alt="">
+                                </button>
+                                <button class="btn" id="startLearningBtn">
+                                    <img class="img-btn" src="/svg/start_lesson.svg" alt="">
+                                </button>
+                            </div>
                         </div>
                         <div id="cardsContainer">
-                            <div class="empty-state">
-                                <div>📚</div>
-                                <h3>Выберите категорию для просмотра карточек</h3>
-                                <p>Карточки появятся здесь после выбора категории</p>
+                            <div class="cards-grid">
+
                             </div>
                         </div>
                     </div>
@@ -98,202 +95,11 @@
                 </div>
             </div>
         </div>
-        <script>
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', '/api/v1/cards/');
-            xhr.responseType = 'json';
-            xhr.send();
-            const categories = [];
-            const cards = {};
-
-            xhr.onload = function() {
-                let categoriesArr = xhr.response["cardCategories"];
-
-                for (let i = 0; i < categoriesArr.length; i++) {
-                    categories.push({"id": categoriesArr[i].id, "name": categoriesArr[i].name, "cardCount": categoriesArr[i].cardCount});
-                    cards[categoriesArr[i].id] = categoriesArr[i].cards;
-                }
-
-                initCategories();
-            };
-
-            let currentCategoryId = null;
-            let currentCards = [];
-            let currentCardIndex = 0;
-            let isLearning = false;
-
-            // Initialize categories
-            function initCategories() {
-                const categoriesList = document.getElementById('categoriesList');
-                categoriesList.innerHTML = '';
-                const addCategoryButton = document.getElementById('addCategoryButton');
-                addCategoryButton.addEventListener('click', addCard);
-
-                categories.forEach(category => {
-                    const li = document.createElement('li');
-                    li.className = 'category-item';
-                    li.innerHTML = `
-                                        <span>${category.name}</span>
-                                        <span class="card-count">${category.cardCount}</span>
-                                    `;
-                    li.onclick = () => selectCategory(category.id);
-                    categoriesList.appendChild(li);
-                });
-            }
-
-            // Select category
-            function selectCategory(categoryId) {
-                currentCategoryId = categoryId;
-
-                // Update active category
-                document.querySelectorAll('.category-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                event.currentTarget.classList.add('active');
-
-                // Show category name
-                const category = categories.find(c => c.id === categoryId);
-                document.getElementById('currentCategory').textContent = category.name;
-
-                // Show cards
-                showCards(categoryId);
-
-                // Show start learning button
-                document.getElementById('startLearningBtn').style.display = 'inline-flex';
-            }
-
-            function addCard(e) {
-                // заполним FormData данными из формы
-                let formData = new FormData(document.forms.addCategoryForm);
-                let json = JSON.stringify({
-                    name: formData.get('name'),
-                    description: formData.get('description')
-                });
-                // отправим данные
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", "/api/v1/cards/addCategory");
-                xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-                xhr.send(json);
-
-                xhr.onload = function() {
-                    let newCategory = JSON.parse(xhr.response);
-                    const categoriesList = document.getElementById('categoriesList');
-                    const li = document.createElement('li');
-                    li.className = 'category-item';
-                    li.innerHTML = `
-                                        <span>${newCategory.name}</span>
-                                        <span class="card-count">${newCategory.cardCount}</span>
-                                    `;
-                    li.onclick = () => selectCategory(newCategory.id);
-                    categoriesList.appendChild(li);
-                }
-            }
-
-            // Show cards for category
-            function showCards(categoryId) {
-                const cardsContainer = document.getElementById('cardsContainer');
-                const categoryCards = cards[categoryId] || [];
-                currentCards = categoryCards;
-
-                if (categoryCards.length === 0) {
-                    cardsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div>📝</div>
-                        <h3>В этой категории пока нет карточек</h3>
-                        <p>Создайте первую карточку для начала обучения</p>
-                        <button class="btn btn-primary" style="margin-top: 1rem;">+ Добавить карточку</button>
-                    </div>
-                `;
-                    return;
-                }
-
-                cardsContainer.innerHTML = `
-                <div class="cards-grid">
-                    ${categoryCards.map(card => `
-                        <div class="card-item" onclick="editCard(${card.id})">
-                            <div class="card-question">${card.question}</div>
-                            <div class="card-answer">${card.answer}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            }
-
-            // Start learning
-            function startLearning() {
-                if (currentCards.length === 0) {
-                    alert('В этой категории нет карточек для обучения!');
-                    return;
-                }
-
-                isLearning = true;
-                currentCardIndex = 0;
-
-                // Switch to learning view
-                document.getElementById('cardsListView').style.display = 'none';
-                document.getElementById('learningView').style.display = 'block';
-
-                showCurrentCard();
-            }
-
-            // Show current card
-            function showCurrentCard() {
-                const card = currentCards[currentCardIndex];
-                document.getElementById('cardQuestion').textContent = card.question;
-                document.getElementById('cardAnswer').textContent = card.answer;
-                document.getElementById('currentCardNumber').textContent = currentCardIndex + 1;
-                document.getElementById('totalCards').textContent = currentCards.length;
-
-                // Reset card flip state
-                document.getElementById('cardContainer').classList.remove('card-flipped');
-            }
-
-            // Flip card
-            function flipCard() {
-                document.getElementById('cardContainer').classList.toggle('card-flipped');
-            }
-
-            // Next card
-            function nextCard() {
-                if (currentCardIndex < currentCards.length - 1) {
-                    currentCardIndex++;
-                    showCurrentCard();
-                } else {
-                    alert('🎉 Поздравляем! Вы завершили изучение этой категории!');
-                    backToCards();
-                }
-            }
-
-            // Previous card
-            function prevCard() {
-                if (currentCardIndex > 0) {
-                    currentCardIndex--;
-                    showCurrentCard();
-                }
-            }
-
-            // Edit current card
-            function editCurrentCard() {
-                const card = currentCards[currentCardIndex];
-                editCard(card.id);
-            }
-
-            // Edit card (placeholder)
-            function editCard(cardId) {
-                alert(`Редактирование карточки #${cardId}\n\nВ реальном приложении здесь будет открываться форма редактирования`);
-            }
-
-            // Back to cards list
-            function backToCards() {
-                isLearning = false;
-                document.getElementById('learningView').style.display = 'none';
-                document.getElementById('cardsListView').style.display = 'block';
-            }
-
-            // Go home
-            function goHome() {
-                window.location.href = 'index.html'; // Предполагая, что главная страница называется index.html
-            }
+        <script th:inline="javascript" type="module">
+            import Cards from '/js/cards.js';
+            let cardCategories = /*[[${cardCategories}]]*/ null;
+            let CardsComponent = new Cards(cardCategories);
+            console.log(cardCategories);
         </script>
     </body>
 </html>

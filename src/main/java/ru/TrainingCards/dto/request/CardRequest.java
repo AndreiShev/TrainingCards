@@ -10,7 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CardRequest {
+    private Integer id;
     private String title;
     private String answer;
-    private String category;
+    private Integer category;
 }

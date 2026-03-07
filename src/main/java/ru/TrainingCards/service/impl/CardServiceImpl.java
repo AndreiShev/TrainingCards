@@ -2,9 +2,13 @@ package ru.TrainingCards.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.TrainingCards.dto.request.CardRequest;
+import ru.TrainingCards.dto.response.CardResponse;
+import ru.TrainingCards.mapper.CardMapper;
 import ru.TrainingCards.model.Card;
 import ru.TrainingCards.repository.CardRepository;
 import ru.TrainingCards.service.CardService;
+import ru.TrainingCards.service.CategoryService;
 
 import java.util.List;
 
@@ -12,34 +16,67 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
+    private final CardMapper cardMapper;
+    private final CategoryService categoryService;
 
     @Override
-    public List<Card> getCards() {
+    public List<Card> getCardsEntity() {
         return cardRepository.findAll();
     }
 
     @Override
-    public Card getCard(int id) {
-        return cardRepository.findById(id).get();
+    public List<CardResponse> getCards() {
+        return cardMapper.CardsToResponse(getCardsEntity());
     }
 
     @Override
-    public Card addCard(Card card) {
-        return cardRepository.save(card);
+    public List<Card> getCardsEntityByCategory(Integer categoryId) {
+        return cardRepository.findCardsByCategory(categoryId).orElse(List.of());
     }
 
     @Override
-    public Card updateCard(Card card) {
-        Card existCard = getCard(card.getId());
-        existCard.setTitle(card.getTitle());
-        existCard.setAnswer(card.getAnswer());
-
-        cardRepository.save(existCard);
-        return null;
+    public List<CardResponse> getCardsByCategory(Integer id) {
+        return cardMapper.CardsToResponse(getCardsEntityByCategory(id));
     }
 
     @Override
-    public void removeCard(int id) {
-        cardRepository.deleteById(id);
+    public Card getCardEntity(Integer id) {
+        return cardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("Card not found")
+        );
+    };
+
+    @Override
+    public CardResponse getCard(Integer id) {
+        return cardMapper.CardToResponse(getCardEntity(id));
+    }
+
+    @Override
+    public CardResponse addCard(CardRequest request) {
+        Card card = cardMapper.RequestToCard(request);
+        card.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
+
+        return cardMapper.CardToResponse(cardRepository.save(card));
+    }
+
+    @Override
+    public CardResponse updateCard(CardRequest request) {
+        Card existCard = getCardEntity(request.getId());
+        existCard.setTitle(request.getTitle());
+        existCard.setAnswer(request.getAnswer());
+        existCard.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
+
+        return cardMapper.CardToResponse(cardRepository.save(existCard));
+    }
+
+    @Override
+    public void removeCard(Integer id) {
+        Card card = getCardEntity(id);
+        cardRepository.delete(card);
+    }
+
+    @Override
+    public void removeCards(List<Card> cards) {
+        cardRepository.deleteAll(cards);
     }
 }

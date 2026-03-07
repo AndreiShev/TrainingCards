@@ -6,25 +6,16 @@ import ru.TrainingCards.dto.request.CardCategoryRequest;
 import ru.TrainingCards.dto.response.CardCategoriesResponse;
 import ru.TrainingCards.dto.response.CardCategoryResponse;
 import ru.TrainingCards.model.CardCategory;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class CardCategoryMapper {
-    private final CardMapper cardMapper;
-
     public CardCategoryResponse CardCategoryToResponse(CardCategory cardCategory) {
         CardCategoryResponse cardCategoryResponse = new CardCategoryResponse();
         cardCategoryResponse.setId(cardCategory.getId());
         cardCategoryResponse.setName(cardCategory.getName());
         cardCategoryResponse.setDescription(cardCategory.getDescription());
-        cardCategoryResponse.setCards(cardMapper.CardsToResponse(cardCategory.getCards()).getCards());
-
-        if (cardCategory.getCards() != null) {
-            cardCategoryResponse.setCardCount(cardCategory.getCards().size());
-        }
 
         return cardCategoryResponse;
     }
