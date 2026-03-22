@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CardMaster - Авторизация</title>
+        <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/common.css}">
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <nav>
+                    <a href="/" class="logo">CardMaster</a>
+                    <div class="nav-links">
+                        <a href="/register">Зарегистрироваться</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <div class="modal-window open" id="modalWindowRegisterForm">
+            <div class="modal-window__content">
+                <div class="modal-header">Вход</div>
+                <form class="modal-form" method="POST" action="/login" name="loginForm">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Пароль" required>
+                    <div class="modal-window_btns">
+                        <input class="modal-form__submit btn-secondary" type="submit" value="войти" id="loginForm_submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

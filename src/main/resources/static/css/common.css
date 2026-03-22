@@ -153,15 +153,14 @@ nav {
 .btn {
     border: rgba(255,255,255,0.08);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 14px;
+    text-decoration: none;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #1f1f23;
     background: #26262b;
     border-color: rgba(255,255,255,0.16);
 }
@@ -174,6 +173,8 @@ nav {
     padding: 10px 16px;
     font-weight: 500;
     transition: all var(--ease);
+    font-size: 14px;
+    text-decoration: none;
 }
 
 .btn-primary:hover {
@@ -192,6 +193,8 @@ nav {
     border-radius: var(--radius);
     padding: 10px 16px;
     transition: all var(--ease);
+    font-size: 14px;
+    text-decoration: none;
 }
 
 .btn-secondary:hover {
@@ -488,7 +491,7 @@ nav {
 }
 
 .modal-window__content {
-    width: 300px;
+    width: 450px;
     position: fixed;
     left: calc(50% - var(--form-width) / 2);
     top: 25%;

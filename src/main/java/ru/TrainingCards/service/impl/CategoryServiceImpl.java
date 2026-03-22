@@ -48,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     public List<CardCategoryResponse> findAllCategories() {
         List<CardCategory> cardCategories = categoryRepository.findAll();
         List<CardCategoryResponse> responses = new ArrayList<>();
+
         for (CardCategory cardCategory : cardCategories) {
             CardCategoryResponse response = cardCategoryMapper.CardCategoryToResponse(cardCategory);
             List<Card> cards = cardRepository.findCardsByCategory(cardCategory.getId()).orElse(List.of());

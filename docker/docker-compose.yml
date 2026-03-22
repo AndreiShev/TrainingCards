@@ -13,3 +13,8 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./initSchema.sql:/docker-entrypoint-initdb.d/initSchema.sql
+
+  redis:
+    image: mirror.gcr.io/redis
+    ports:
+      - "6379:6379"
