@@ -53,6 +53,9 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponse addCard(CardRequest request) {
+        //Пока что работает как проверка привязки к пользователю
+        categoryService.findCategoryById(request.getCategory());
+
         Card card = cardMapper.RequestToCard(request);
         card.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
 
@@ -61,10 +64,13 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponse updateCard(CardRequest request) {
+        //Пока что работает как проверка привязки к пользователю
+        categoryService.findCategoryById(request.getCategory());
+
         Card existCard = getCardEntity(request.getId());
         existCard.setTitle(request.getTitle());
         existCard.setAnswer(request.getAnswer());
-        existCard.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
+        //existCard.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
 
         return cardMapper.CardToResponse(cardRepository.save(existCard));
     }

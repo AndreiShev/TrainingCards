@@ -1,7 +1,7 @@
 package ru.TrainingCards.service.impl;
 
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.TrainingCards.dto.request.CardCategoryRequest;
@@ -12,6 +12,7 @@ import ru.TrainingCards.model.Card;
 import ru.TrainingCards.model.CardCategory;
 import ru.TrainingCards.repository.CardRepository;
 import ru.TrainingCards.repository.CategoryRepository;
+import ru.TrainingCards.security.SecurityUtils;
 import ru.TrainingCards.service.CategoryService;
 
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CardCategory findEntityCategoryById(Integer id) {
-        return categoryRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Category not found")
+        return categoryRepository.findCardCategoriesByIdAndUser(id, SecurityUtils.getCurrentUser()).orElseThrow(
+                () -> new AccessDeniedException("Not found or not yours")
         );
     }
 
@@ -45,8 +46,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CardCategoryResponse> findAllCategories() {
-        List<CardCategory> cardCategories = categoryRepository.findAll();
+    public List<CardCategoryResponse> findAllUserCategories() {
+        List<CardCategory> cardCategories = categoryRepository.findCardCategoriesByUser(SecurityUtils.getCurrentUser()).orElseThrow(
+                () -> new AccessDeniedException("Not found or not yours")
+        );
         List<CardCategoryResponse> responses = new ArrayList<>();
 
         for (CardCategory cardCategory : cardCategories) {
@@ -63,14 +66,29 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CardCategoryResponse save(CardCategoryRequest request) {
         CardCategory category = cardCategoryMapper.CardCategoryRequestToCardCategory(request);
+        category.setUser(SecurityUtils.getCurrentUser());
+
         return cardCategoryMapper.CardCategoryToResponse(categoryRepository.save(category));
+    }
+
+    @Override
+    public CardCategoryResponse update(CardCategoryRequest request) {
+        CardCategory category = cardCategoryMapper.CardCategoryRequestToCardCategory(request);
+        CardCategory existCategory = findEntityCategoryById(request.getId());
+
+        existCategory.setName(category.getName());
+        existCategory.setDescription(category.getDescription());
+
+        return cardCategoryMapper.CardCategoryToResponse(categoryRepository.save(existCategory));
     }
 
     @Transactional
     @Override
     public void delete(Integer id) {
-        CardCategory category = findEntityCategoryById(id);
-        cardRepository.deleteByCategoryId(id);
+        CardCategory category = categoryRepository
+                .findCardCategoriesByIdAndUser(id, SecurityUtils.getCurrentUser())
+                .orElseThrow(() -> new AccessDeniedException("Not found or not yours"));
+        cardRepository.deleteByCategoryId(category.getId());
         categoryRepository.delete(category);
     }
 }

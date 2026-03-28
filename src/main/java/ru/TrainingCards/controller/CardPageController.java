@@ -15,7 +15,7 @@ public class CardPageController {
 
     @GetMapping
     public String cards(Model model) {
-        model.addAttribute("cardCategories", categoryService.findAllCategories());
+        model.addAttribute("cardCategories", categoryService.findAllUserCategories());
 
         return "cards";
     }

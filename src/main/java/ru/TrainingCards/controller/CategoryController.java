@@ -17,15 +17,20 @@ public class CategoryController {
 
     @GetMapping("/")
     public List<CardCategoryResponse> getAllCategoriesAndCards() {
-        return categoryService.findAllCategories();
+        return categoryService.findAllUserCategories();
     }
 
-    @PostMapping("/addCategory")
+    @PostMapping("/category")
     public ResponseEntity<CardCategoryResponse> addCategory(@RequestBody CardCategoryRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(request));
     }
 
-    @DeleteMapping("/cardCategory/{id}")
+    @PutMapping("/category")
+    public ResponseEntity<CardCategoryResponse> changeCategory(@RequestBody CardCategoryRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.update(request));
+    }
+
+    @DeleteMapping("/category/{id}")
     public ResponseEntity<Void> deleteCardCategory(@PathVariable Integer id) {
         categoryService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();

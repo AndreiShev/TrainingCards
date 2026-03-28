@@ -15,9 +15,14 @@ import ru.TrainingCards.service.CardService;
 public class CardController {
     private final CardService cardService;
 
-    @PostMapping("/addCard")
+    @PostMapping("/card")
     public ResponseEntity<CardResponse> addCard(@RequestBody CardRequest cardRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(cardService.addCard(cardRequest));
+    }
+
+    @PutMapping("/card")
+    public ResponseEntity<CardResponse> updateCard(@RequestBody CardRequest cardRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cardService.updateCard(cardRequest));
     }
 
     @DeleteMapping("/card/{id}")

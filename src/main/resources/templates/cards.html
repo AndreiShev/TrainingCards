@@ -8,98 +8,92 @@
         <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/common.css}">
     </head>
     <body>
-        <!-- Header -->
-        <header class="header-cards">
+        <div class="app-container">
+            <!-- Header -->
+            <header class="header-cards">
+                <div class="container">
+                    <nav class="nav">
+                        <a class="logo" href="/">CardMaster</a>
+                    </nav>
+                </div>
+            </header>
+
+            <!-- Main Content -->
             <div class="container">
-                <nav class="nav">
-                    <a class="logo" href="/">CardMaster</a>
-                </nav>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="container">
-            <div class="main-layout">
-                <!-- Sidebar with Categories -->
-                <div class="sidebar">
-                    <h3 class="categories-title">Категории карточек</h3>
-                    <ul class="categories-list" id="categoriesList">
-                        <li th:class="category-item"  th:data-category-id="${category.id}" th:each="category : ${cardCategories}">
-                            <span th:text="${category.getName()}"></span>
-                            <span th:class="card-count" th:text="${category.cardCount}"></span>
-                            <button class="btn btn-close"><img src="/svg/close-circle.svg" alt=""></button>
-                        </li>
-                    </ul>
-                    <button id="addCategoryButton" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" >
-                        + Новая категория
-                    </button>
-                </div>
-
-                <!-- Content Area -->
-                <div class="content">
-                    <!-- Cards List View -->
-                    <div id="cardsListView">
-                        <div class="cards-header">
-                            <h2 class="cards-title" id="currentCategory">Выберите категорию</h2>
-                            <div class="cards-actions">
-                                <button class="btn" id="addCardBtn">
-                                    <img class="img-btn" src="/svg/add.svg" alt="">
-                                </button>
-                                <button class="btn" id="startLearningBtn">
-                                    <img class="img-btn" src="/svg/start_lesson.svg" alt="">
-                                </button>
-                            </div>
+                <div class="main-layout">
+                    <!-- Sidebar with Categories -->
+                    <div class="sidebar">
+                        <div class="category-header">
+                            <h2 class="category-title">Категории</h2>
+                            <button class="btn-icon btn-add-category" id="addCategoryButton" title="Добавить категорию">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
                         </div>
-                        <div id="cardsContainer">
-                            <div class="cards-grid">
-
-                            </div>
-                        </div>
+                        <ul class="categories-list" id="categoriesList">
+                            <li th:class="category-item" data-action="select" th:data-category-id="${category.id}" th:each="category : ${cardCategories}">
+                                <div class="category-item-content">
+                                    <span class="category-name" th:text="${category.getName()}"></span>
+                                </div>
+                                <div class="category-item-actions">
+                                    <button class="btn-category-action btn-edit btn-change" data-action="change" title="Редактировать">
+                                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                                            <path d="m15 5 4 4"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="btn-category-action btn-delete btn-close" data-action="delete" title="Удалить">
+                                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <span th:class="card-count" th:text="${category.cardCount}"></span>
+                            </li>
+                        </ul>
                     </div>
 
-                    <!-- Learning View -->
-                    <div id="learningView" class="learning-view">
-                        <div class="progress-info">
-                            Карточка <span id="currentCardNumber">1</span> из <span id="totalCards">0</span>
-                        </div>
-
-                        <div class="card-container" id="cardContainer" onclick="flipCard()">
-                            <div class="card-content">
-                                <div class="card-question-content" id="cardQuestion">
-                                    Вопрос появится здесь
-                                </div>
-                                <div class="card-answer-content" id="cardAnswer">
-                                    Ответ появится здесь после нажатия на карточку
+                    <!-- Content Area -->
+                    <div class="content">
+                        <!-- Cards List View -->
+                        <div id="cardsListView">
+                            <div class="cards-header">
+                                <h2 class="cards-title" id="currentCategory">Выберите категорию</h2>
+                                <div class="cards-actions">
+                                    <button class="btn-icon btn-action btn" id="addCardBtn" title="Добавить карточку">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                    <button class="btn-icon btn-action btn" id="startLearningBtn" title="Начать обучение">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v1A2.5 2.5 0 0 0 9.5 8h5A2.5 2.5 0 0 0 17 5.5v-1A2.5 2.5 0 0 0 14.5 2z"></path>
+                                            <path d="M5 9a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h1"></path>
+                                            <path d="M18 16h1a3 3 0 0 0 3-3v-4a3 3 0 0 0-3-3H5"></path>
+                                            <path d="M6 14h12v8H6z"></path>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
-                        </div>
+                            <div id="cardsContainer">
+                                <div class="cards-grid">
 
-                        <div class="navigation">
-                            <button class="btn btn-secondary" onclick="prevCard()">
-                                ⬅️ Назад
-                            </button>
-                            <button class="btn btn-outline" onclick="editCurrentCard()">
-                                ✏️ Редактировать
-                            </button>
-                            <button class="btn btn-primary" onclick="nextCard()">
-                                Далее ➡️
-                            </button>
-                        </div>
-
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <button class="btn btn-secondary" onclick="backToCards()">
-                                ← Вернуться к списку
-                            </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <script th:inline="javascript" type="module">
+                import Cards from '/js/cards.js';
+                let cardCategories = /*[[${cardCategories}]]*/ null;
+                let CardsComponent = new Cards(cardCategories);
+                console.log(cardCategories);
+            </script>
         </div>
-        <script th:inline="javascript" type="module">
-            import Cards from '/js/cards.js';
-            let cardCategories = /*[[${cardCategories}]]*/ null;
-            let CardsComponent = new Cards(cardCategories);
-            console.log(cardCategories);
-        </script>
     </body>
 </html>

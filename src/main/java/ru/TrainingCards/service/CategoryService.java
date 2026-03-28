@@ -13,9 +13,11 @@ public interface CategoryService {
 
     public CardCategory findCategoryByName(String name);
 
-    public List<CardCategoryResponse> findAllCategories();
+    public List<CardCategoryResponse> findAllUserCategories();
 
     public CardCategoryResponse save(CardCategoryRequest request);
+
+    public CardCategoryResponse update(CardCategoryRequest request);
 
     public void delete(Integer id);
 }

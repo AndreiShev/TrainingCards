@@ -20,10 +20,15 @@ public class CardCategoryMapper {
         return cardCategoryResponse;
     }
 
-    public CardCategory CardCategoryRequestToCardCategory(CardCategoryRequest response) {
+    public CardCategory CardCategoryRequestToCardCategory(CardCategoryRequest request) {
         CardCategory cardCategory = new CardCategory();
-        cardCategory.setName(response.getName());
-        cardCategory.setDescription(response.getDescription());
+        if (request.getId() != null) {
+            cardCategory.setId(request.getId());
+        }
+
+        cardCategory.setName(request.getName());
+        cardCategory.setDescription(request.getDescription());
+
         return cardCategory;
     }
 
