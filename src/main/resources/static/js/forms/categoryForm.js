@@ -1,5 +1,6 @@
+import store from '../cardsStore.js';
+
 export default class CategoryForm {
-    cards;
     formElement;
     modalElement;
     submitBtn;
@@ -9,8 +10,7 @@ export default class CategoryForm {
     onSuccess = null;
     onError = null;
 
-    constructor(cards) {
-        this.cards = cards;
+    constructor() {
         this.buildCategoryModalWindow();
         this.setFormElement();
         this.setUIButtons();

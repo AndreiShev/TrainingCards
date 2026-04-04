@@ -1,5 +1,6 @@
+import store from '../cardsStore.js';
+
 export default class CardForm {
-    cards;
     formElement;
     modalElement;
     submitBtn;
@@ -9,8 +10,7 @@ export default class CardForm {
     onSuccess = null;
     onError = null;
 
-    constructor(cards) {
-        this.cards = cards;
+    constructor() {
         this.buildCategoryModalWindow();
         this.setFormElement();
         this.setUIButtons();
@@ -32,7 +32,7 @@ export default class CardForm {
                             </div>
                         </form>
                     </div>
-                </div>\``;
+                </div>`;
         document.body.insertAdjacentHTML('afterend', sModal);
         this.modalElement = document.getElementById('modalWindowAddCard');
     }
@@ -108,7 +108,7 @@ export default class CardForm {
                     element.setValue("");
 
                     if (element.name === "category") {
-                        element.setValue(this.cards.currentCategoryId);
+                        element.setValue(store.getActiveCategoryId());
                     }
                 }
                 this.submitBtn.value = "Создать";
@@ -118,7 +118,7 @@ export default class CardForm {
                     element.setValue(data[element.name]);
 
                     if (element.name === "category") {
-                        element.setValue(this.cards.currentCategoryId);
+                        element.setValue(store.getActiveCategoryId());
                     }
                 }
                 this.submitBtn.value = "Обновить";

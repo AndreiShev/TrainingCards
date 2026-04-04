@@ -1,15 +1,12 @@
 import CategoryForm from './forms/categoryForm.js';
 import CardForm from './forms/cardForm.js';
+import store from './cardsStore.js';
 
 export default class Cards {
-    currentCategoryId = "";
-    currentCards = [];
-    cardCategories = [];
     categoryForm;
     cardForm;
 
-    constructor(cardCategories) {
-        this.cardCategories = cardCategories;
+    constructor() {
         this.addListenersToCategories();
         this.addListenersToCards();
 
@@ -28,7 +25,7 @@ export default class Cards {
             }
         });
 
-        this.cardForm = new CardForm(this);
+        this.cardForm = new CardForm();
         this.cardForm.setCallbacks({
             onSuccess: (action, data) => {
                 if (action === 'create') {
@@ -42,6 +39,16 @@ export default class Cards {
                 alert(error);
             }
         });
+
+        this.subscribe();
+    }
+
+    subscribe() {
+        store.subscribe(this.setActiveCategory);
+        store.subscribe(this.resetCardsTitle);
+        store.subscribe(this.showCards);
+        store.subscribe(this.toggleCardActions);
+        store.subscribe(this.updateHTMLCountCategory)
     }
 
     /* Обработка формы на создание карточки */
@@ -81,14 +88,13 @@ export default class Cards {
         }).then(r => {});
 
         elem.remove();
-        this.deleteCardFromCategory(cardId);
-        this.updateCountCategory(this.currentCategoryId);
+        store.deleteCardFromCategory(cardId);
     }
 
     handleChangeCard(event) {
         let cardElem = event.target.closest('[data-card-id]');
         let cardId = Number(cardElem.getAttribute('data-card-id'));
-        let cardObj = this.findCard(this.findCategory(this.currentCategoryId), cardId);
+        let cardObj = store.findCard(store.getActiveCategory(), cardId);
         this.cardForm.openForUpdate(cardObj);
     }
 
@@ -118,8 +124,7 @@ export default class Cards {
                                     <div class="card-answer">${newCard.answer}</div>
                                 </div>`;
         cardsGrid.prepend(cardElem);
-        this.addCardToCategory(newCard);
-        this.updateCountCategory(this.currentCategoryId);
+        store.addCardToCategory(newCard);
     }
 
     handleCardUpdated(card) {
@@ -128,23 +133,21 @@ export default class Cards {
         elem.querySelector('.card-question').innerHTML = card["title"];
         elem.querySelector('.card-answer').innerHTML = card["answer"];
 
-        let cardObj = this.findCard(this.findCategory(this.currentCategoryId), card.id);
+        let cardObj = store.findCard(store.getActiveCategory(), card.id);
         cardObj["question"] = card["title"];
         cardObj["answer"] = card["answer"];
     }
 
-    showCards() {
+    showCards = () => {
         const cardsContainer = document.querySelector('.cards-grid');
-        const categoryCards = this.cardCategories.find(c => c.id === this.currentCategoryId);
-        this.currentCards = categoryCards["cards"];
 
-        if (this.currentCards.length === 0) {
+        if (store.getCards().length === 0) {
             cardsContainer.innerHTML = ``;
             return;
         }
 
         cardsContainer.innerHTML = `
-                                    ${this.currentCards.map(card => `
+                                    ${store.getCards().map(card => `
                                         <div class="card-item flashcard" data-card-id="${card.id}">
                                             <div class="flashcard-face">
                                                 <div class="flashcard-actions">
@@ -167,25 +170,6 @@ export default class Cards {
                                         </div>
                                     `).join('')}
                             `;
-    }
-
-    addCardToCategory(cardObj) {
-        const category = this.findCategory(this.currentCategoryId);
-        if (category) {
-            category['cards'].push(cardObj);
-            category.cardCount += 1;
-        }
-    }
-
-    deleteCardFromCategory(cardId) {
-        const category = this.findCategory(this.currentCategoryId);
-        if (category) {
-            const cardIndex = category.cards.findIndex(card => card.id === cardId);
-            if (cardIndex !== -1) {
-                category.cards.splice(cardIndex, 1);
-                category.cardCount = category.cards.length;
-            }
-        }
     }
     /*  END Обработка формы на создание карточки */
 
@@ -223,12 +207,7 @@ export default class Cards {
 
     selectCategory(event) {
         let elem = event.target.closest('[data-category-id]');
-        this.currentCategoryId = Number(elem.getAttribute('data-category-id'));
-        this.setActiveCategory(elem);
-        const category = this.findCategory(this.currentCategoryId);
-        this.resetCardsTitle(category.name);
-        this.showCards(this.currentCategoryId);
-        this.showCardActions();
+        store.setActiveCategory(Number(elem.getAttribute('data-category-id')));
     }
 
     deleteCategory(event) {
@@ -240,21 +219,20 @@ export default class Cards {
         }).then(r => {});
 
         categoryElem.remove();
-        this.deleteCategoryFromData(categoryId);
-
-        if(categoryId === this.currentCategoryId) {
-            this.deleteCategoryCardsFromHTML(categoryId);
-            this.resetCardsTitle();
-            this.closeCardActions();
-        }
+        store.deleteCategory(categoryId);
+        this.deleteCategoryCardsFromHTML(categoryId);
     }
 
     changeCategoryHandle(event) {
-        let categoryObj = this.findCategory(Number(event.target.closest('[data-category-id]').getAttribute('data-category-id')));
+        let categoryObj = store.findCategory(Number(event.target.closest('[data-category-id]').getAttribute('data-category-id')));
         this.categoryForm.openForUpdate(categoryObj);
     }
 
-    deleteCategoryCardsFromHTML() {
+    deleteCategoryCardsFromHTML(categoryId) {
+        if (categoryId !== store.getActiveCategoryId()) {
+            return;
+        }
+
         let cards = document.querySelectorAll(".card-item");
         cards.forEach(item => {
             item.removeEventListener("click", this.handleDeleteCard);
@@ -262,19 +240,23 @@ export default class Cards {
         document.querySelector('.cards-grid').innerHTML = "";
     }
 
-    resetCardsTitle(value) {
+    resetCardsTitle = () => {
         let title = document.querySelector('.cards-title');
-        title.innerHTML = `${value ?? "Выберите категорию"}`;
+        if (store.getActiveCategory() !== null) {
+            title.innerHTML = store.getActiveCategory().name;
+            return;
+        }
+
+        title.innerHTML = "Выберите категорию";
     }
 
-    updateCountCategory(categoryId) {
-        const category = this.cardCategories.find(category => category.id === categoryId);
-        let categoryElem = document.querySelector(`[data-category-id="${this.currentCategoryId}"]`);
+    updateHTMLCountCategory() {
+        const category = store.getActiveCategory();
+        let categoryElem = document.querySelector(`[data-category-id="${store.getActiveCategoryId()}"]`);
         categoryElem.querySelector('.card-count').innerHTML = category.cardCount;
     }
 
     handleCategoryCreated(newCategory) {
-        this.cardCategories.push(newCategory);
         const categoriesList = document.getElementById('categoriesList');
         let li = document.createElement('li');
         li.className = 'category-item';
@@ -300,26 +282,27 @@ export default class Cards {
                             </div>
                             <span class="card-count">${newCategory.cardCount}</span>`;
         categoriesList.appendChild(li);
-        this.currentCategoryId = newCategory.id;
-        this.setActiveCategory(li);
-        this.resetCardsTitle(newCategory.name);
-        this.showCards(this.currentCategoryId);
-        this.showCardActions();
+        store.addCategory(newCategory);
     }
 
     handleCategoryUpdated(category) {
-        let categoryObj = this.findCategory(category.id);
+        let categoryObj = store.findCategory(category.id);
         categoryObj.name = category.name;
         categoryObj.description = category.description;
         let elem = document.querySelector(`[data-category-id="${category.id}"]`);
         elem.querySelector('.category-name').innerHTML = category.name;
 
-        if (category.id = this.currentCategoryId) {
+        if (category.id === store.getActiveCategoryId()) {
             document.querySelector('.cards-title').innerHTML = category.name;
         }
     }
 
-    setActiveCategory(element) {
+    setActiveCategory = () => {
+        if (store.getActiveCategory() === null) {
+            return;
+        }
+
+        let element = document.querySelector(`[data-category-id="${store.getState().activeCategoryId}"]`);
         document.querySelectorAll('.category-item').forEach(item => {
             item.classList.remove('active');
         });
@@ -327,29 +310,14 @@ export default class Cards {
     }
     /*  END Обработка формы на создание категории */
 
-    showCardActions() {
+    toggleCardActions = () => {
         let btns = document.querySelector('.cards-actions');
-        btns.style.visibility = "visible";
-    }
 
-    closeCardActions() {
-        let btns = document.querySelector('.cards-actions');
-        btns.style.visibility = "hidden";
-    }
-
-    deleteCategoryFromData(categoryId) {
-        let index = this.cardCategories.findIndex(c => c.id === categoryId);
-
-        if (index !== -1) {
-            this.cardCategories.splice(index, 1);
+        if (store.getActiveCategory()) {
+            btns.style.visibility = "visible";
+            return;
         }
-    }
 
-    findCategory(categoryId) {
-        return this.cardCategories.find(c => c.id === categoryId);
-    }
-
-    findCard(categoryObj, cardId) {
-        return categoryObj["cards"].find(card => card.id === cardId);
+        btns.style.visibility = "hidden";
     }
 }

@@ -6,7 +6,9 @@ import ru.TrainingCards.dto.request.CardRequest;
 import ru.TrainingCards.dto.response.CardResponse;
 import ru.TrainingCards.mapper.CardMapper;
 import ru.TrainingCards.model.Card;
+import ru.TrainingCards.model.CardCategory;
 import ru.TrainingCards.repository.CardRepository;
+import ru.TrainingCards.security.SecurityUtils;
 import ru.TrainingCards.service.CardService;
 import ru.TrainingCards.service.CategoryService;
 
@@ -41,7 +43,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Card getCardEntity(Integer id) {
-        return cardRepository.findById(id).orElseThrow(
+        return cardRepository.findCardByIdAndUser(id, SecurityUtils.getCurrentUser()).orElseThrow(
                 () -> new IllegalArgumentException("Card not found")
         );
     };
@@ -53,24 +55,19 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponse addCard(CardRequest request) {
-        //Пока что работает как проверка привязки к пользователю
-        categoryService.findCategoryById(request.getCategory());
-
+        CardCategory category = categoryService.findEntityCategoryById(request.getCategory());
         Card card = cardMapper.RequestToCard(request);
-        card.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
+        card.setCategory(category);
+        card.setUser(SecurityUtils.getCurrentUser());
 
         return cardMapper.CardToResponse(cardRepository.save(card));
     }
 
     @Override
     public CardResponse updateCard(CardRequest request) {
-        //Пока что работает как проверка привязки к пользователю
-        categoryService.findCategoryById(request.getCategory());
-
         Card existCard = getCardEntity(request.getId());
         existCard.setTitle(request.getTitle());
         existCard.setAnswer(request.getAnswer());
-        //existCard.setCategory(categoryService.findEntityCategoryById(request.getCategory()));
 
         return cardMapper.CardToResponse(cardRepository.save(existCard));
     }
