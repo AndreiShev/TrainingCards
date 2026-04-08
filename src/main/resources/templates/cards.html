@@ -87,7 +87,7 @@
                         <div class="learn-display">
                             <div class="cards-header">
                                 <div class="cards-info">
-                                    <h2 class="cards-title">Обучение: категория</h2>
+                                    <h2 id="learningTitle" class="cards-title" >Обучение: категория</h2>
                                     <p id="cardsRemaining">Осталось карточек: 5</p>
                                 </div>
                                 <div class="cards-actions">
@@ -101,23 +101,23 @@
                             <div id="studyArea">
                                 <div class="card-wrapper" id="cardWrapper">
                                     <div class="card-face question">
-                                        <div class="card-content" id="questionText">Столица России</div>
+                                        <div class="card-title">Столица России</div>
                                     </div>
                                     <div class="card-face answer">
                                         <div>
-                                            <div class="card-content">Столица России</div>
+                                            <div class="card-title">Столица России</div>
                                             <div class="card-content_answer" id="answerText">Москва</div>
                                         </div>
                                         <div class="study-buttons" id="buttonsArea">
                                             <div class="difficulty-buttons" id="difficultyButtons">
-                                                <button class="btn-difficulty repeat" title="Повторить снова">
+                                                <button class="btn-difficulty repeat" data-action="repeat" title="Повторить снова">
                                                     <svg viewBox="0 0 24 24">
                                                         <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
                                                         <path d="M21 3v5h-5"></path>
                                                     </svg>
                                                     Повторить
                                                 </button>
-                                                <button class="btn-difficulty difficult" title="Сложно">
+                                                <button class="btn-difficulty difficult" data-action="hard" title="Сложно">
                                                     <svg viewBox="0 0 24 24">
                                                         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                                                         <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -125,7 +125,7 @@
                                                     </svg>
                                                     Сложно
                                                 </button>
-                                                <button class="btn-difficulty normal" title="Нормально">
+                                                <button class="btn-difficulty normal" data-action="normal" title="Нормально">
                                                     <svg viewBox="0 0 24 24">
                                                         <circle cx="12" cy="12" r="10"></circle>
                                                         <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
@@ -134,7 +134,7 @@
                                                     </svg>
                                                     Нормально
                                                 </button>
-                                                <button class="btn-difficulty easy" title="Легко">
+                                                <button class="btn-difficulty easy" data-action="easy" title="Легко">
                                                     <svg viewBox="0 0 24 24">
                                                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -154,9 +154,11 @@
                 import Cards from '/js/cards.js';
                 import Learning from '/js/learning.js';
                 import CardsStore from "/js/cardsStore.js";
+                import LearningStore from '/js/learningStore.js';
 
                 let cardCategories = /*[[${cardCategories}]]*/ null;
                 CardsStore.init(cardCategories);
+                LearningStore.init([]);
 
                 let CardsComponent = new Cards();
                 let leaningComponent = new Learning();

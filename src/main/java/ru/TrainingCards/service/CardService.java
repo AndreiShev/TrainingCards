@@ -2,7 +2,6 @@ package ru.TrainingCards.service;
 
 import ru.TrainingCards.dto.request.CardRequest;
 import ru.TrainingCards.dto.response.CardResponse;
-import ru.TrainingCards.dto.response.CardsResponse;
 import ru.TrainingCards.model.Card;
 
 import java.util.List;

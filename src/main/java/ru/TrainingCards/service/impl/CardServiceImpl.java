@@ -28,7 +28,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<CardResponse> getCards() {
-        return cardMapper.CardsToResponse(getCardsEntity());
+        return cardMapper.cardsToResponse(getCardsEntity());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public List<CardResponse> getCardsByCategory(Integer id) {
-        return cardMapper.CardsToResponse(getCardsEntityByCategory(id));
+        return cardMapper.cardsToResponse(getCardsEntityByCategory(id));
     }
 
     @Override
@@ -50,17 +50,17 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public CardResponse getCard(Integer id) {
-        return cardMapper.CardToResponse(getCardEntity(id));
+        return cardMapper.cardToResponse(getCardEntity(id));
     }
 
     @Override
     public CardResponse addCard(CardRequest request) {
         CardCategory category = categoryService.findEntityCategoryById(request.getCategory());
-        Card card = cardMapper.RequestToCard(request);
+        Card card = cardMapper.requestToCard(request);
         card.setCategory(category);
         card.setUser(SecurityUtils.getCurrentUser());
 
-        return cardMapper.CardToResponse(cardRepository.save(card));
+        return cardMapper.cardToResponse(cardRepository.save(card));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CardServiceImpl implements CardService {
         existCard.setTitle(request.getTitle());
         existCard.setAnswer(request.getAnswer());
 
-        return cardMapper.CardToResponse(cardRepository.save(existCard));
+        return cardMapper.cardToResponse(cardRepository.save(existCard));
     }
 
     @Override

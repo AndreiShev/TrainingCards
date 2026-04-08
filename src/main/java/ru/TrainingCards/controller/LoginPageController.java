@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.TrainingCards.dto.request.LoginRequest;
 
@@ -18,7 +19,7 @@ public class LoginPageController {
     }
 
     @PostMapping
-    public String processRegistration(LoginRequest request) {
+    public String processRegistration(@RequestBody LoginRequest request) {
 
         return "redirect:/cards";
     }

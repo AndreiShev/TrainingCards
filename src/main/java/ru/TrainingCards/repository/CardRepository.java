@@ -8,7 +8,7 @@ import ru.TrainingCards.model.Card;
 import ru.TrainingCards.model.CardCategory;
 import ru.TrainingCards.model.User;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,8 +24,8 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
 
     Optional<Card> findCardByIdAndCategory(Integer id, CardCategory category);
 
-    @Query("select c from Card c where c.user = ?1 and c.nextReviewAt < ?2")
-    Optional<List<Card>> findSessionCard(User user, ZonedDateTime now);
+    @Query("select c from Card c where c.user = ?1 and c.nextReviewAt < ?2 order by c.nextReviewAt desc")
+    List<Card> findSessionCard(User user, Instant now);
 
     Optional<Card> findCardByIdAndUser(Integer id, User user);
 

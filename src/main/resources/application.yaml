@@ -14,7 +14,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
 
   datasource:
     driver-class-name: org.postgresql.Driver

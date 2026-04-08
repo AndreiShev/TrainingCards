@@ -29,7 +29,7 @@ public class Card {
 
     private Integer repetitions;
 
-    private Integer interval;
+    private Float interval;
 
     @Column(name = "next_review_at")
     private Instant nextReviewAt;
@@ -37,12 +37,16 @@ public class Card {
     @Column(name = "last_reviewed_at")
     private Instant lastReviewedAt;
 
+    @Column(name = "easy_factor")
+    private Float easyFactor;
+
     @PrePersist
     public void prePersist() {
         if (repetitions == null) repetitions = 0;
-        if (interval == null) interval = 0;
+        if (interval == null) interval = 1f;
         if (nextReviewAt == null) nextReviewAt = Instant.now();
         if (lastReviewedAt == null) lastReviewedAt = Instant.now();
+        if (easyFactor == null) easyFactor = 1.3f;
     }
 
 }

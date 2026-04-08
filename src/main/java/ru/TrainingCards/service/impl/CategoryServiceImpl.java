@@ -35,7 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CardCategoryResponse findCategoryById(Integer id) {
-        return cardCategoryMapper.CardCategoryToResponse(findEntityCategoryById(id));
+        return cardCategoryMapper.cardCategoryToResponse(findEntityCategoryById(id));
     }
 
     @Override
@@ -53,10 +53,10 @@ public class CategoryServiceImpl implements CategoryService {
         List<CardCategoryResponse> responses = new ArrayList<>();
 
         for (CardCategory cardCategory : cardCategories) {
-            CardCategoryResponse response = cardCategoryMapper.CardCategoryToResponse(cardCategory);
+            CardCategoryResponse response = cardCategoryMapper.cardCategoryToResponse(cardCategory);
             List<Card> cards = cardRepository.findCardsByCategory(cardCategory.getId()).orElse(List.of());
             response.setCardCount(cards.size());
-            response.setCards(cardMapper.CardsToResponse(cards));
+            response.setCards(cardMapper.cardsToResponse(cards));
             responses.add(response);
         }
 
@@ -65,21 +65,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CardCategoryResponse save(CardCategoryRequest request) {
-        CardCategory category = cardCategoryMapper.CardCategoryRequestToCardCategory(request);
+        CardCategory category = cardCategoryMapper.cardCategoryRequestToCardCategory(request);
         category.setUser(SecurityUtils.getCurrentUser());
 
-        return cardCategoryMapper.CardCategoryToResponse(categoryRepository.save(category));
+        return cardCategoryMapper.cardCategoryToResponse(categoryRepository.save(category));
     }
 
     @Override
     public CardCategoryResponse update(CardCategoryRequest request) {
-        CardCategory category = cardCategoryMapper.CardCategoryRequestToCardCategory(request);
+        CardCategory category = cardCategoryMapper.cardCategoryRequestToCardCategory(request);
         CardCategory existCategory = findEntityCategoryById(request.getId());
 
         existCategory.setName(category.getName());
         existCategory.setDescription(category.getDescription());
 
-        return cardCategoryMapper.CardCategoryToResponse(categoryRepository.save(existCategory));
+        return cardCategoryMapper.cardCategoryToResponse(categoryRepository.save(existCategory));
     }
 
     @Transactional

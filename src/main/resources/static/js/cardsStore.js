@@ -25,7 +25,6 @@ class CardsStore {
             this.state[key] = newState[key];
         }
 
-        // уведомляем всех подписчиков
         this.listeners.forEach(listener => listener(this.state))
     }
 
@@ -49,7 +48,7 @@ class CardsStore {
 
     unSubscribe(listener) {
         return () => {
-            this.listeners = this.listeners.filter(l => l !== listener)
+            this.listeners = this.listeners.filter(l => l !== listener);
         }
     }
 
